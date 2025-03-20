@@ -1,0 +1,10 @@
+{
+  "name": "ertekelo-pwa",
+  "version": "1.0.0",
+  "description": "Loss Elimination Evaluation PWA",
+  "scripts": {
+    "start": "serve -s build",
+    "build": "echo 'No build step needed'"
+  },
+  "dependencies": {}
+}

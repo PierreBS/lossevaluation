@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loss Elimination Evaluation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        h1, h2 {
+            font-size: 2.5em;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            color: black;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 2px solid #ddd;
+            padding: 15px;
+            font-size: 1.8em;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        input[type="radio"] {
+            transform: scale(2);
+        }
+        .total-score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ff0000;
+        }
+        .reset-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .summary-table {
+            margin-top: 40px;
+            font-size: 2em;
+            background: white;
+            color: black;
+        }
+        textarea {
+            width: 80%;
+            font-size: 1.5em;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+    <script>
+        let totalScores = [];
+
+        function calculateScores(index) {
+            let table = document.getElementById("table" + index);
+            let total = 0;
+            let ratings = table.querySelectorAll("input[type='radio']:checked");
+            ratings.forEach(radio => {
+                total += parseInt(radio.value);
+            });
+            document.getElementById("total" + index).innerText = total;
+            totalScores[index] = total;
+            updateSummary();
+        }
+
+        function resetScores() {
+            let radios = document.querySelectorAll("input[type='radio']:checked");
+            radios.forEach(radio => radio.checked = false);
+            
+            let totalElements = document.querySelectorAll(".total-score");
+            totalElements.forEach(element => element.innerText = "-");
+            totalScores = [];
+            
+            let comments = document.querySelectorAll("textarea");
+            comments.forEach(comment => {
+                comment.value = "";
+            });
+            updateSummary();
+        }
+
+        function updateSummary() {
+            let summaryTable = document.getElementById("summary");
+            summaryTable.innerHTML = "<tr><th>Szekció</th><th>Összpontszám</th></tr>";
+            tableHeaders.forEach((header, index) => {
+                let score = totalScores[index] || "-";
+                summaryTable.innerHTML += `<tr><td>${header}</td><td>${score}</td></tr>`;
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Loss Elimination Evaluation</h1>
+        <script>
+            let tableHeaders = [
+                "LOSS ELIMINATION - MIXING",
+                "LOSS ELIMINATION - EXTRUDING",
+                "LOSS ELIMINATION - CUTTING",
+                "LOSS ELIMINATION - BUILDING",
+                "LOSS ELIMINATION - CURING",
+                "LOSS ELIMINATION - FI",
+                "LOSS ELIMINATION - BIRD X"
+            ];
+            
+            tableHeaders.forEach((header, index) => {
+                document.write(`
+                    <h2>${header}</h2>
+                    <table id="table${index}">
+                        <tr>
+                            <th>Szempont</th>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                        </tr>
+                        ${["Gép és környezete 3S", "Veszteségcsökkentés mértéke", "Prezentáció érthetősége", "Veszteségcsökkentő folyamat jósága"].map(criterion => `
+                        <tr>
+                            <td>${criterion}</td>
+                            ${[1, 2, 3, 4, 5].map(value => `
+                            <td><input type="radio" name="${criterion.replace(/\s+/g, '')}${index}" value="${value}" onclick="calculateScores(${index})"></td>`).join('')}
+                        </tr>
+                        `).join('')}
+                        <tr>
+                            <td><strong>Összpontszám</strong></td>
+                            <td colspan="5" class="total-score"><strong id="total${index}">-</strong></td>
+                        </tr>
+                    </table>
+                    <label for="comment${index}"><strong>Megjegyzés:</strong></label>
+                    <textarea id="comment${index}" rows="4" cols="80"></textarea>
+                `);
+            });
+        </script>
+        
+        <button class="reset-button" onclick="resetScores()">Nullázás</button>
+        
+        <h2>Összesített eredmények</h2>
+        <table id="summary" class="summary-table">
+            <tr><th>Szekció</th><th>Összpontszám</th></tr>
+        </table>
+    </div>
+</body>
+</html>
